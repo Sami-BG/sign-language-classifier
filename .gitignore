@@ -1,0 +1,5 @@
+env
+.idea
+.gitignore
+data/sign_mnist_test
+data/sign_mnist_train
