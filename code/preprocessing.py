@@ -44,4 +44,6 @@ def preprocess(path, patch_size, channels=1):
 	patches = patch_images(images, patch_size, channels)
 	return patches, labels
 
-preprocess('../data/sign_mnist_train/sign_mnist_train.csv', patch_size=7)
+
+if __name__ == '__main__':
+	preprocess('../data/sign_mnist_train/sign_mnist_train.csv', patch_size=7)
