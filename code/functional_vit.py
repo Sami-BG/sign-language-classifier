@@ -3,6 +3,8 @@ from tensorflow.keras.layers import LayerNormalization, Dense, Dropout, Input
 import tensorflow_model_optimization as tfmod
 from transformer_block import Transformer
 
+# None of this works, because tf.Variables are not serializable. SAD!
+
 
 def setup_vit(batch_size,
 			  mlp_dim,
@@ -24,7 +26,7 @@ def setup_vit(batch_size,
 	# Expand dimensions of class embedding to batch of patches
 	class_embedding = tf.broadcast_to(class_embedding, [tf.shape(inputs)[0], 1, model_dim])
 	outputs0 = tf.add(tf.concat([class_embedding, projected], axis=1), positional_embedding)
-	# Create encoding blocks
+	# Create encoding blocks. I hardcoded it to try to make it serializable
 	outputs1 = Transformer(args[0], args[1], args[2], args[3], name='encoder_1')(outputs0)
 	outputs2 = Transformer(args[0], args[1], args[2], args[3], name='encoder_2')(outputs1)
 	outputs3 = Transformer(args[0], args[1], args[2], args[3], name='encoder_3')(outputs2)
@@ -47,4 +49,5 @@ if __name__ == '__main__':
 								 num_patches=16, dropout=True,
 								 dropout_amount=0.1, encoding_layers=5)
 	cloned = tf.keras.models.clone_model(functional_model)
+	# For debug :)
 	a = 2

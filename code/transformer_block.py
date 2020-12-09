@@ -31,7 +31,8 @@ class Transformer(tf.keras.layers.Layer, tfmod.sparsity.keras.PrunableLayer):
 		self.drop2 = Dropout(dropout, name='encoder_drop2')
 		self.norm = LayerNormalization(epsilon=1e-5, name='encoder_norm')
 
-	def get_config(self):
+	# This does not work, so for the sake of time, it's being omitted :(
+	def not_get_config(self):
 		config = super(Transformer, self).get_config()
 		config.update({
 			'embedded_dim': self.embedded_dim,
@@ -40,9 +41,10 @@ class Transformer(tf.keras.layers.Layer, tfmod.sparsity.keras.PrunableLayer):
 			'dropout': self.dropout
 		})
 
-	# Note: This is the default implementation, so we technically don't need to have this here.
+	# Note: This is the default implementation, so we technically don't need to have this here. But also, doesn't work.
+	#  so not_from_config!
 	@classmethod
-	def from_config(cls, config):
+	def not_from_config(cls, config):
 		return cls(**config)
 
 	def get_prunable_weights(self):

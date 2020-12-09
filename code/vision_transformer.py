@@ -20,6 +20,7 @@ class VisionTransformer(tf.keras.models.Model):
 		self.MLP_norm = LayerNormalization(epsilon=1e-6, name='vit_norm')
 		self.MLP_W1 = Dense(mlp_dim, activation=tf.keras.activations.relu, name='vit_dense1')
 		self.MLP_Dropout = Dropout(dropout_amount, name='vit_dropout')
+		# NOTE! DON'T USE SOFTMAX! Gradients vanish
 		self.MLP_W2 = Dense(num_classes, name='vit_dense2')
 
 		self.encoding_blocks = [Transformer(embedded_dim=model_dim, number_heads=num_heads,
@@ -32,7 +33,8 @@ class VisionTransformer(tf.keras.models.Model):
 		# Class embedding to infer from
 		self.class_embedding = self.add_weight(name="class_embedding", shape=(1, 1, model_dim))
 
-	def get_config(self):
+	# Now it doesn't override get_config I suppose!
+	def not_get_config(self):
 		config = super(VisionTransformer, self).get_config()
 		config.update({
 			'mlp_dim': self.mlp_dim,
@@ -45,8 +47,9 @@ class VisionTransformer(tf.keras.models.Model):
 			'encoding_layers': self.encoding_layers
 		})
 
+	# Also commented this out cause it does not work
 	@classmethod
-	def from_config(cls, config, custom_objects=None):
+	def not_from_config(cls, config, custom_objects=None):
 		return cls(**config)
 
 	@tf.function
