@@ -4,7 +4,7 @@ from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout
 import pandas as pd
 import matplotlib.pyplot as plt
-from visualize import make_confusion_matrix as plot_confusion_matrix
+from visualize import plot_loss, plot_accuracy, plot_confusion_matrix
 
 TRAIN_PATH = '../data/sign_mnist_train.csv'
 TEST_PATH = '../data/sign_mnist_test.csv'
@@ -51,42 +51,18 @@ def train_model(base_model, x, y):
 
 	return episodes
 
-
-def plot_loss(path):
-	episodes = pd.read_csv(path)
-	plt.plot(episodes['loss'].values)
-	plt.plot(episodes['val_loss'].values)
-	plt.title("Loss for CNN Implementation")
-	plt.xlabel('epochs')
-	plt.ylabel('loss')
-	plt.legend(['train', 'validation'])
-	plt.show()
-
-
-def plot_accuracy(path):
-	episodes = pd.read_csv(path)
-	plt.plot(episodes['accuracy'].values)
-	plt.plot(episodes['val_accuracy'].values)
-	plt.title("Accuracy for CNN Implementation")
-	plt.xlabel('epochs')
-	plt.ylabel('accuracy')
-	plt.legend(['train', 'validation'])
-	plt.show()
-
-
 def main():
 	x_train, y_raw = read_data(TRAIN_PATH)
 	y_train = to_categorical(y_raw)
 	x_test, y_test_raw = read_data(TEST_PATH)
 	y_test = to_categorical(y_test_raw)
 	model = setup_model()
-	model = tf.keras.models.load_model('./CNN')
 	# episodes = train_model(model, x_train, y_train)
-	plot_loss(path='./cnn_history.csv')
-	plot_accuracy(path='./cnn_history.csv')
+	plot_loss(path='./cnn_history.csv', title='Loss for CNN')
+	plot_accuracy(path='./cnn_history.csv', title='Accuracy for CNN')
 	predictions = model.predict_classes(x_test)
 	model.evaluate(x_test, y_test)
-	plot_confusion_matrix(y_true=y_test_raw.values, y_pred=predictions)
+	plot_confusion_matrix(y_true=y_test_raw.values, y_pred=predictions, title='Confusion Matrix for CNN')
 
 
 if __name__ == '__main__':

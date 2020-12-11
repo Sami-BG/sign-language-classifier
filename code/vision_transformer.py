@@ -3,6 +3,7 @@ from tensorflow.keras.layers import LayerNormalization, Dense, Dropout
 import tensorflow_model_optimization as tfmod
 from transformer_block import Transformer
 
+
 class VisionTransformer(tf.keras.models.Model):
 	def __init__(self, mlp_dim, num_classes, model_dim, num_heads, num_patches,
 				 dropout=True, dropout_amount=0.1, encoding_layers=5):

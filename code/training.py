@@ -3,7 +3,7 @@ import tensorflow as tf
 from preprocessing import preprocess
 from tensorflow.keras.models import Model
 import tensorflow_model_optimization as tfmot
-
+import pandas as pd
 
 prune_low_magnitude = tfmot.sparsity.keras.prune_low_magnitude
 
@@ -11,11 +11,15 @@ prune_low_magnitude = tfmot.sparsity.keras.prune_low_magnitude
 def train_model(inputs, labels, name):
 	model: tf.keras.Model = VisionTransformer(mlp_dim=64, num_classes=25,
 											  model_dim=32, num_heads=4, num_patches=16, dropout=True,
-											  dropout_amount=0.1, encoding_layers=2)
+											  dropout_amount=0.1, encoding_layers=5)
 	model.compile(optimizer=tf.optimizers.Adam(),
 				  loss=tf.losses.SparseCategoricalCrossentropy(from_logits=True),
 				  metrics=['accuracy'])
-	model.fit(inputs, labels, batch_size=16, validation_split=0.2, epochs=25)
+	episodes = model.fit(inputs, labels, batch_size=16, validation_split=0.2, epochs=25)
+	hist_df = pd.DataFrame(episodes.history)
+	history_csv_path = 'vit_history.csv'
+	with open(history_csv_path, mode='w') as f:
+		hist_df.to_csv(f)
 	model.evaluate(x=test_inputs, y=test_labels)
 	model.save(f'./{name}/', overwrite=True)
 	model.save_weights(f'./{name}_weights/', overwrite=True)
